@@ -1,0 +1,1 @@
+CREATE TABLE `template`.`Account` ( `id` INT NOT NULL AUTO_INCREMENT , `email` TEXT NOT NULL , `hash` TEXT NOT NULL , `emailGoogle` TEXT NOT NULL , `salt` TEXT NOT NULL , `username` TEXT NOT NULL , PRIMARY KEY (`id`), UNIQUE (`username`(50))) ENGINE = InnoDB;

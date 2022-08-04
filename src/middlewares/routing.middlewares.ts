@@ -4,11 +4,11 @@ import ITreeFile from '../interfaces/ITreeFile';
 
 export default async function routing(req: Request, res: Response, next: NextFunction) {
   const method = req.method.toLocaleLowerCase();
-  const _tree: ITreeFile = req.app.get('tree');
+  const tree: ITreeFile = req.app.get('tree');
 
   let moduleFunction = await import('../modules/api/501');
   try {
-    const { params, pathname } = getModuleByUrl(`${req.url.slice(1).replace(/\?(.*)/, '')}.${method}.js`, _tree);
+    const { params, pathname } = getModuleByUrl(`${req.params[0]}.${method}.js`, tree);
     req.body = { ...params, ...req.body };
 
     moduleFunction = await import(`../modules/${pathname}`);

@@ -1,4 +1,4 @@
 export default interface IModulePath {
-  pathname: string,
-  params: Object
+  pathname: string;
+  params: Object;
 }
