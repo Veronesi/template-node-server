@@ -2,7 +2,10 @@ import * as dotenv from 'dotenv';
 import express, { json, urlencoded } from 'express';
 import path from 'path';
 import cors from 'cors';
+import morgan from 'morgan';
+import fs from 'fs';
 import { pathToTreeFile } from './libs/pathToTreeFile';
+import { ServerLog } from './services/logger.services';
 
 import routingMiddleware from './middlewares/routing.middlewares';
 import authentication from './middlewares/authentication.middlewares';
@@ -16,14 +19,17 @@ try {
   const tree = pathToTreeFile('../modules');
   app.set('tree', tree);
 } catch (error: any) {
-  // eslint-disable-next-line no-console
-  console.log(`Erorr in create path tree in ${error.message}`);
+  ServerLog.error(`can't create path tree in ${error.message}`);
   process.exit();
 }
 
-app.use(express.json());
+// Create a write stream (in append mode)
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+
 app.use(urlencoded({ limit: '150mb', extended: true }));
 app.use(json({ limit: '150mb' }));
+
 app.use(cors({ origin: '*' }));
 
 app.route('/*').all(authentication, rolsMiddleware, routingMiddleware);

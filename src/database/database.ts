@@ -2,6 +2,7 @@ import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
 import dotenv from 'dotenv';
 import { Dialect } from 'sequelize';
+import { ServerLog } from '../services/logger.services';
 
 const baseRoute = path.join(__dirname, '..');
 const baseRouteENV = path.join(__dirname, '..', '..');
@@ -32,9 +33,13 @@ if (process.env.NODE_ENV === 'test') {
       storage: ':memory:',
       models: [`${baseRoute}/models`],
     });
+
+    sequelize.authenticate().catch((error: Error) => {
+      ServerLog.error(error.message);
+      process.exit();
+    });
   } catch (error: any) {
-    // eslint-disable-next-line no-console
-    console.log(error);
+    ServerLog.error(error.message);
     process.exit();
   }
 }
