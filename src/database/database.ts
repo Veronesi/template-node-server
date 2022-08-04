@@ -1,12 +1,12 @@
 import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import { Dialect } from 'sequelize';
 
 const baseRoute = path.join(__dirname, '..');
 const baseRouteENV = path.join(__dirname, '..', '..');
 
-dotenv.config({ path: `${baseRouteENV}/config/.env` });
+dotenv.config({ path: `${baseRouteENV}/configs/.env` });
 if (!process.env.DB_PORT) {
   process.env.DB_PORT = '-1';
 }
@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === 'test') {
   let dialect: Dialect = 'mysql';
   try {
     dialect = process.env.DB_DIALECT as Dialect;
-
     sequelize = new Sequelize({
       database: process.env.DB_NAME,
       dialect,
@@ -34,6 +33,8 @@ if (process.env.NODE_ENV === 'test') {
       models: [`${baseRoute}/models`],
     });
   } catch (error: any) {
+    // eslint-disable-next-line no-console
+    console.log(error);
     process.exit();
   }
 }

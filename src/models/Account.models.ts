@@ -24,6 +24,9 @@ export default class Account extends Model<IAccount, AccountCreationAttributes> 
   @Column({ type: DataType.STRING })
   public emailGoogle?: string;
 
+  @Column({ type: DataType.STRING })
+  public role!: string;
+
   @Column({ type: DataType.STRING, unique: true })
   public username!: string;
 }

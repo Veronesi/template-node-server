@@ -1,12 +1,12 @@
+import * as dotenv from 'dotenv';
 import express, { json, urlencoded } from 'express';
-import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
-
 import { pathToTreeFile } from './libs/pathToTreeFile';
 
 import routingMiddleware from './middlewares/routing.middlewares';
 import authentication from './middlewares/authentication.middlewares';
+import rolsMiddleware from './middlewares/rols.middlewares';
 
 dotenv.config({ path: path?.join?.(__dirname, '../configs/.env') });
 
@@ -26,6 +26,6 @@ app.use(urlencoded({ limit: '150mb', extended: true }));
 app.use(json({ limit: '150mb' }));
 app.use(cors({ origin: '*' }));
 
-app.route('/*').all(authentication, routingMiddleware);
+app.route('/*').all(authentication, rolsMiddleware, routingMiddleware);
 
 export default app;

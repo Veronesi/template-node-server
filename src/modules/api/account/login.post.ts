@@ -75,6 +75,7 @@ export default async function postLogin(req: Request, res: Response) {
     }
     return res.status(501).json({
       error: true,
+      message: error.message,
     });
   }
 }

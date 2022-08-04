@@ -5,4 +5,5 @@ export default interface IAccount {
   emailGoogle?: string;
   salt: string;
   username: string;
+  role: string;
 }
