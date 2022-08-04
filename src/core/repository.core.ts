@@ -18,7 +18,7 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     this.model = model;
   }
 
-  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M[] | null> {
+  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M[]> {
     const resource = await this.model.findAll({
       where: query,
       attributes,
@@ -27,7 +27,7 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
       return resource;
     }
 
-    return null;
+    return [];
   }
 
   public async findById(id: number, attributes?: string[]): Promise<M | null> {

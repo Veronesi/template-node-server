@@ -12,17 +12,21 @@ if (!process.env.DB_PORT) {
   process.env.DB_PORT = '-1';
 }
 let sequelize: Sequelize;
-if (process.env.NODE_ENV === 'test') {
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    database: 'test',
-    storage: ':memory:',
-    models: [`${baseRoute}/models`],
-  });
-} else {
+try {
   let dialect: Dialect = 'mysql';
-  try {
-    dialect = process.env.DB_DIALECT as Dialect;
+  dialect = process.env.DB_DIALECT as Dialect;
+
+  if (process.env.NODE_ENV === 'test') {
+    sequelize = new Sequelize({
+      dialect,
+      database: 'test',
+      storage: ':memory:',
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      models: [`${baseRoute}/models`],
+      logging: false,
+    });
+  } else {
     sequelize = new Sequelize({
       database: process.env.DB_NAME,
       dialect,
@@ -32,15 +36,16 @@ if (process.env.NODE_ENV === 'test') {
       port: parseInt(process.env.DB_PORT, 10),
       storage: ':memory:',
       models: [`${baseRoute}/models`],
+      logging: false,
     });
 
     sequelize.authenticate().catch((error: Error) => {
       ServerLog.error(error.message);
       process.exit();
     });
-  } catch (error: any) {
-    ServerLog.error(error.message);
-    process.exit();
   }
+} catch (error: any) {
+  ServerLog.error(error.message);
+  process.exit();
 }
 export = sequelize;
