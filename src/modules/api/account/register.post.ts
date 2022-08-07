@@ -28,7 +28,7 @@ async function postRegister(req: Request, res: Response, next: NextFunction) {
     next();
   } catch (error: any) {
     if (error instanceof UniqueConstraintError) {
-      res.status(500).json({
+      res.status(401).json({
         error: true,
         message: error.message,
       });

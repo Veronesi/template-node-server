@@ -14,12 +14,12 @@ beforeAll(async () => {
 });
 const api = request(app);
 const account = {
-  accountName: 'nekane',
+  username: 'nekane',
   email: 'nekane@nekane.com',
   password: 'nekaneSweet',
 };
 const res = api.post('/api/account/register');
-res.send({ account });
+res.send({ ...account });
 
 describe('User registration', () => {
   it('returns 200 OK when signup request is valid', (done) => {
