@@ -1,48 +1,15 @@
-import { Request, Response } from 'express';
-import { verifyToken, createToken } from '../../../services/jwt.services';
+import { NextFunction, Request, Response } from 'express';
+import { createToken } from '../../../services/jwt.services';
 import { verifyPassword } from '../../../services/crypto.services';
 import Account from '../../../services/Account.services';
 import { ResourceNotFoundError } from '../../../core/repository.core';
+import { AccountLog } from '../../../services/logger.services';
+import loginMiddleware from '../../../middlewares/login.middlewares';
 
-export default async function postLogin(req: Request, res: Response) {
+async function postLogin(req: Request, res: Response, next: NextFunction) {
   const { password, username } = req.body;
 
-  // check if user is already logead
-  const getToken = req.get('token');
-  const control = verifyToken(getToken);
-  if (!control.error) {
-    return res.status(500).json({
-      message: 'you are login',
-      error: true,
-    });
-  }
-
-  // login...
-  if (!password) {
-    return res.status(505).json({
-      message: 'password is undefined',
-      error: true,
-    });
-  }
-
-  if (!username) {
-    return res.status(505).json({
-      message: 'username is undefined',
-      error: true,
-    });
-  }
-
-  // user is loged
-  const token = createToken(username);
-
-  if (!token) {
-    return res.status(505).json({
-      message: 'authentication creation error',
-      error: true,
-    });
-  }
-
-  // check password
+  // check credentials
   try {
     const account = await Account.findOne({ username }, ['hash', 'salt']);
     if (!account) {
@@ -53,7 +20,7 @@ export default async function postLogin(req: Request, res: Response) {
 
     const newHash = await verifyPassword(password.toString(), salt);
     if (newHash !== hash) {
-      return res.status(505).json({
+      return res.status(400).json({
         message: 'password is wrong',
         newHash,
         hash,
@@ -61,21 +28,35 @@ export default async function postLogin(req: Request, res: Response) {
       });
     }
 
-    res.set({ authentication: token });
-    return res.status(200).json({
-      authentication: token,
-      error: false,
-    });
-  } catch (error: any) {
-    if (error instanceof ResourceNotFoundError) {
-      return res.status(200).json({
-        authentication: '',
+    const token = createToken(username);
+
+    if (!token) {
+      return res.status(400).json({
+        message: 'authentication creation error',
         error: true,
       });
     }
-    return res.status(501).json({
+
+    // res.set({ authentication: token });
+    AccountLog.info(`${username} logged`);
+    res.locals.body.authentication = token;
+    return next();
+  } catch (error: any) {
+    if (error instanceof ResourceNotFoundError) {
+      return res.status(200).json({
+        message: 'user not exist',
+        error: true,
+      });
+    }
+
+    AccountLog.warning(error.message);
+    return res.status(500).json({
       error: true,
       message: error.message,
     });
   }
+}
+
+export default function route(req: Request, res: Response, next: NextFunction) {
+  loginMiddleware(req, res, () => postLogin(req, res, next));
 }

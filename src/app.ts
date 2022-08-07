@@ -10,6 +10,7 @@ import { ServerLog } from './services/logger.services';
 import routingMiddleware from './middlewares/routing.middlewares';
 import authentication from './middlewares/authentication.middlewares';
 import rolsMiddleware from './middlewares/rols.middlewares';
+import responseMiddleware from './middlewares/response.middlewares';
 
 dotenv.config({ path: path?.join?.(__dirname, '../configs/.env') });
 
@@ -32,6 +33,6 @@ app.use(json({ limit: '150mb' }));
 
 app.use(cors({ origin: '*' }));
 
-app.route('/*').all(authentication, rolsMiddleware, routingMiddleware);
+app.route('/*').all(authentication, rolsMiddleware, routingMiddleware, responseMiddleware);
 
 export default app;

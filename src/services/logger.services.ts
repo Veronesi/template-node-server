@@ -5,7 +5,9 @@ const logConfigurationServer = {
   format: format.combine(
     format.label({ label: 'Server' }),
     format.timestamp({ format: 'MMM-DD-YYYY HH:mm:ss' }),
-    format.printf((info) => `{level: "${info.level}", label: "${info.label}", timestamp: "${[info.timestamp]}", message: "${info.message}"}`)
+    format.printf(
+      (info) => `{level: "${info.level}", label: "${info.label}", timestamp: "${[info.timestamp]}", message: "${info.message.replace(/"/, "'")}"}`
+    )
   ),
 };
 
@@ -14,10 +16,24 @@ const logConfiguration = {
   format: format.combine(
     format.label({ label: 'Server' }),
     format.timestamp({ format: 'MMM-DD-YYYY HH:mm:ss' }),
-    format.printf((info) => `{level: "${info.level}", label: "${info.label}", timestamp: "${[info.timestamp]}", message: "${info.message}"}`)
+    format.printf(
+      (info) => `{level: "${info.level}", label: "${info.label}", timestamp: "${[info.timestamp]}", message: "${info.message.replace(/"/, "'")}"}`
+    )
+  ),
+};
+
+const logConfigurationAccount = {
+  transports: [new transports.File({ filename: 'logs/account.log', level: 'info' })],
+  format: format.combine(
+    format.label({ label: 'Account' }),
+    format.timestamp({ format: 'MMM-DD-YYYY HH:mm:ss' }),
+    format.printf(
+      (info) => `{level: "${info.level}", label: "${info.label}", timestamp: "${[info.timestamp]}", message: "${info.message.replace(/"/, "'")}"}`
+    )
   ),
 };
 
 const logger = createLogger(logConfiguration);
 export const ServerLog = createLogger(logConfigurationServer);
+export const AccountLog = createLogger(logConfigurationAccount);
 export default logger;

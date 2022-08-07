@@ -3,7 +3,7 @@ import { createToken, verifyToken } from '../services/jwt.services';
 import ROUTES from '../configs/routes';
 
 function sendErrror(res: Response, message: string) {
-  res.status(501).json({
+  res.status(401).json({
     error: true,
     message,
   });
@@ -12,6 +12,8 @@ function sendErrror(res: Response, message: string) {
 export default function authentication(req: Request, res: Response, next: NextFunction) {
   const token = req.get('authentication');
   const control = verifyToken(token);
+
+  res.locals.body = {};
 
   if (control.error) {
     if (ROUTES.PUBLIC_ROUTES.has(req.params[0])) {
