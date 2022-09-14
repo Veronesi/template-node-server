@@ -1,4 +1,5 @@
-import { BaseError } from "../core/baseError.core";
+/* eslint-disable max-classes-per-file */
+import { BaseError } from '../core/baseError.core';
 
 export class NoPathExistError extends BaseError {
   constructor(public originalName: string = '', public stackTrace: string = '') {

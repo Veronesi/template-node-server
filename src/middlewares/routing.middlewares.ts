@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { getModuleByUrl } from '../libs/pathToTreeFile';
-import ITreeFile from '../interfaces/ITreeFile';
 import { ServerLog } from '../services/logger.services';
 
 export default async function routing(req: Request, res: Response, next: NextFunction) {
