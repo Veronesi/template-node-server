@@ -1,12 +1,19 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import Account from '../../../services/Account.services';
+import Client from '../../../database/redis/Client';
 
-export default async function postLogin(req: Request, res: Response) {
+export default async function postLogin(req: Request, res: Response, next: NextFunction) {
   const { id } = req.body;
-  return res.status(200).json({
-    user: {
-      name: 'test',
-      id,
-    },
-    error: false,
-  });
+  const clientCache = await Client.get('user/'+4);
+  if(clientCache){
+    res.locals.body.user = {
+      name: clientCache,
+      id
+    }
+    return next();
+  }
+  const account = await Account.findOne({ id });
+  Client.set('user/'+id,'test1');
+  res.locals.body.user = account;
+  return next();
 }

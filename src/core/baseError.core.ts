@@ -5,18 +5,18 @@ export abstract class BaseError {
 
   title: string;
 
-  description: string;
+  message: string;
 
   originalName: string;
 
   stackTrace: string;
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(code: number, name: string, title: string, description: string, originalName = '', stackTrace = '') {
+  constructor(code: number, name: string, title: string, message: string, originalName = '', stackTrace = '') {
     this.code = code;
     this.name = name;
     this.title = title;
-    this.description = description;
+    this.message = message;
     this.originalName = originalName;
     this.stackTrace = stackTrace;
   }
@@ -26,7 +26,7 @@ export abstract class BaseError {
       code: this.code,
       name: this.name,
       title: this.title,
-      description: this.description,
+      message: this.message,
     };
   }
 }

@@ -13,7 +13,7 @@ function sendError(res: Response, message: string) {
 }
 
 export default async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
-  if (ROUTES.PUBLIC_ROUTES.has(req.params[0])) {
+  if (ROUTES.PUBLIC_ROUTES.has(req.params.pathname)) {
     return next();
   }
   const { account } = res.locals;
@@ -45,8 +45,6 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
 
     return havePermissions ? next() : sendError(res, "Don't have permissions");
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
     return res.status(500).json({
       err,
       message: 'error in the trycatch rols middleware',

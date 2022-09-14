@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import ITreeFile from '../interfaces/ITreeFile';
 import IModulePath from '../interfaces/IModulePath';
+import { NoPathExistError, NoFileExistError } from '../classes/Error';
 
 interface IPropos {
   [key: string]: string;
@@ -68,7 +69,7 @@ export const getModuleByUrl = (url: string, tree: ITreeFile): IModulePath => {
     }
 
     // no folder exist
-    throw new Error('no path exist');
+    throw new NoPathExistError('no path exist');
   }
 
   // check if static file exist
@@ -83,7 +84,7 @@ export const getModuleByUrl = (url: string, tree: ITreeFile): IModulePath => {
   // check and get dinamic file
   const paramFile: string | undefined = tree.files.find((file) => /^\[(\w+)\]+\.(\w+)\.(js|ts)$/.exec(file));
   if (!paramFile) {
-    throw new Error(`no file exist: ${url}`);
+    throw new NoFileExistError(`no file exist: ${url}`);
   }
 
   const params: IPropos = {};

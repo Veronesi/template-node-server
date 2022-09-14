@@ -40,7 +40,7 @@ try {
     });
 
     sequelize.authenticate().catch((error: Error) => {
-      ServerLog.error(error.message);
+      ServerLog.error(`${error.name}: ${error.message}`);
       process.exit();
     });
   }

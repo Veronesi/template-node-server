@@ -16,7 +16,7 @@ export default function authentication(req: Request, res: Response, next: NextFu
   res.locals.body = {};
 
   if (control.error) {
-    if (ROUTES.PUBLIC_ROUTES.has(req.params[0])) {
+    if (ROUTES.PUBLIC_ROUTES.has(req.params.pathname)) {
       return next();
     }
     return sendErrror(res, control.message);
