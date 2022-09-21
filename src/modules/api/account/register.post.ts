@@ -1,12 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { UniqueConstraintError } from 'sequelize';
 import Account from '../../../services/Account.services';
 import { encryptPassword } from '../../../services/crypto.services';
 import registerMiddleware from '../../../middlewares/register.middlewares';
 import { createToken } from '../../../services/jwt.services';
 import { AccountLog } from '../../../services/logger.services';
+import { sendError, sendSuccess } from '../../../core/trafic.core';
 
-async function postRegister(req: Request, res: Response, next: NextFunction) {
+async function postRegister(req: Request, res: Response) {
   const { password, username, email } = req.body;
 
   try {
@@ -17,31 +18,22 @@ async function postRegister(req: Request, res: Response, next: NextFunction) {
     const token = createToken(username);
 
     if (!token) {
-      res.status(500).json({
-        message: 'authentication creation error',
-        error: true,
-      });
+      sendError(res, 'authentication creation error');
       return;
     }
     res.set('token', token);
-    res.locals.body.message = 'register success';
-    next();
+    sendSuccess(res, { message: 'register success' });
+    return;
   } catch (error: any) {
     if (error instanceof UniqueConstraintError) {
-      res.status(401).json({
-        error: true,
-        message: error.message,
-      });
+      sendError(res, error.message);
       return;
     }
     AccountLog.warn(error.message);
-    res.status(500).json({
-      error: true,
-      message: error.message,
-    });
+    sendError(res, error.message);
   }
 }
 
-export default function module(req: Request, res: Response, next: NextFunction) {
-  registerMiddleware(req, res, () => postRegister(req, res, next));
+export default function module(req: Request, res: Response) {
+  registerMiddleware(req, res, () => postRegister(req, res));
 }

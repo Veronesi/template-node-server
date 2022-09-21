@@ -4,7 +4,7 @@ const ROUTES = {
     'api/account/register.post',
     'api/account/loginGoogle.post',
     'logger/[id].get',
-    'api/user/[id].get',
+    'api/mongodb/user/[id].get',
   ]),
 };
 

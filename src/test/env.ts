@@ -1,11 +1,12 @@
+// eslint-disable-next-line import/no-import-module-exports
 import sequelize from '../database/database';
-import Account from '../services/Account.services';
+import AccountService from '../services/Account.services';
 
 async function global() {
   await sequelize.sync({ force: true });
-  const control = await Account.findAll();
-  if (control && control.length !== 0) {
-    await Account.delete({}, true);
+  const control = await AccountService.findAll();
+  if (control.length !== 0) {
+    await AccountService.delete({}, true);
   }
 }
 

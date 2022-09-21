@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --forceExit",
+    "test": "jest --watchAll --runInBand --forceExit",
     "dev": "nodemon -e ts  --exec \"npm run start\"",
     "start": "tsc && node dist/index.js",
     "lint": "eslint src/**/*.ts --ext .ts",

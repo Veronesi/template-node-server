@@ -1,9 +1,19 @@
 import request from 'supertest';
-import Account from '../../services/Account.services';
-import { verifyPassword } from '../../services/crypto.services';
-import sequelize from '../../database/database';
+import Account from '../../../services/Account.services';
+import sequelize from '../../../database/database';
+import { verifyPassword } from '../../../services/crypto.services';
+import app from '../../../app';
 
-import app from '../../app';
+const api = request(app);
+
+const account = {
+  username: 'nekane',
+  email: 'nekane@nekane.com',
+  password: 'nekaneSweet',
+};
+
+const res = api.post('/api/account/register');
+res.send({ ...account });
 
 beforeAll(async () => {
   await sequelize.sync();
@@ -12,30 +22,26 @@ beforeAll(async () => {
     await Account.delete({}, true);
   }
 });
-const api = request(app);
-const account = {
-  username: 'nekane',
-  email: 'nekane@nekane.com',
-  password: 'nekaneSweet',
-};
-const res = api.post('/api/account/register');
-res.send({ ...account });
+
+afterAll(async () => {
+  await sequelize.close();
+});
 
 describe('User registration', () => {
-  it('returns 200 OK when signup request is valid', (done) => {
+  test('returns 200 OK when signup request is valid', (done) => {
     res.then((response) => {
       expect(response.status).toBe(200);
       done();
     });
   });
 
-  it('returns success err when signup request is valid', (done) => {
+  test('returns success err when signup request is valid', (done) => {
     res.then((response) => {
-      expect(response.body.error).toBe(false);
+      expect(response.error).toBe(false);
       done();
     });
   });
-  it('save users to database', (done) => {
+  test('save users to database', (done) => {
     res.then(async () => {
       const queryAccount = await Account.findAll({
         email: 'nekane@nekane.com',
@@ -44,7 +50,7 @@ describe('User registration', () => {
       done();
     });
   });
-  it('save accountname and email to database', (done) => {
+  test('save accountname and email to database', (done) => {
     res.then(async () => {
       const queryAccount = await Account.findAll({
         email: 'nekane@nekane.com',
@@ -56,7 +62,7 @@ describe('User registration', () => {
       done();
     });
   });
-  it('hashes the password in database', (done) => {
+  test('hashes the password in database', (done) => {
     res.then(async () => {
       const queryAccount = await Account.findAll({
         email: 'nekane@nekane.com',
@@ -68,7 +74,4 @@ describe('User registration', () => {
       done();
     });
   });
-});
-afterAll(async () => {
-  await sequelize.close();
 });

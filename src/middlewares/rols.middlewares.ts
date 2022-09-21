@@ -4,26 +4,23 @@ import ROUTES from '../configs/routes';
 import ROLS from '../configs/rols';
 import { getModuleByUrl } from '../libs/pathToTreeFile';
 import ITreeFile from '../interfaces/ITreeFile';
-
-function sendError(res: Response, message: string) {
-  return res.status(501).json({
-    error: true,
-    message,
-  });
-}
+import { sendError } from '../core/trafic.core';
 
 export default async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
   if (ROUTES.PUBLIC_ROUTES.has(req.params.pathname)) {
-    return next();
+    next();
+    return;
   }
   const { account } = res.locals;
   if (!account) {
-    return sendError(res, 'user is not login');
+    sendError(res, 'user is not login', 401);
+    return;
   }
   try {
     const { role = 'user', username = '' } = (await Account.findOne({ username: account }, ['role', 'username'])) ?? {};
     if (!username) {
-      return sendError(res, 'username not found');
+      sendError(res, 'username not found', 401);
+      return;
     }
 
     const roleUpperCase = role.toUpperCase();
@@ -31,8 +28,7 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
     const UrlList: string[] = ROLS[roleSelect];
 
     const tree: ITreeFile = req.app.get('tree');
-
-    const url = getModuleByUrl(req.params[0], tree)
+    const url = getModuleByUrl(`${req.params[0]}.${req.method.toLocaleLowerCase()}.js`, tree)
       .pathname.replace(/\.(\w+).(js|ts)$/, '')
       .replace(/\[/g, '\\[')
       .replace(/\]/g, '\\]');
@@ -43,11 +39,13 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
       return re.exec(e);
     });
 
-    return havePermissions ? next() : sendError(res, "Don't have permissions");
+    if (havePermissions) {
+      next();
+      return;
+    }
+    sendError(res, "Don't have permissions", 401);
+    return;
   } catch (err) {
-    return res.status(500).json({
-      err,
-      message: 'error in the trycatch rols middleware',
-    });
+    sendError(res, 'error in the trycatch rols middleware');
   }
 }
