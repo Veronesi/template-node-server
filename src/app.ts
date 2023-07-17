@@ -5,11 +5,11 @@ import cors from 'cors';
 import morgan from 'morgan';
 import fs from 'fs';
 import { pathToTreeFile } from './libs/pathToTreeFile';
-import { ServerLog } from './services/logger.services';
+import { ServerLog } from './services/logger.service';
 
-import routingMiddleware from './middlewares/routing.middlewares';
+import routingMiddleware from './middlewares/routing.middleware';
 import authentication from './middlewares/authentication.middlewares';
-import rolsMiddleware from './middlewares/rols.middlewares';
+import rolsMiddleware from './middlewares/rols.middleware';
 import parserMiddleware from './middlewares/parser.middleware';
 
 dotenv.config({ path: path?.join?.(__dirname, '../configs/.env') });

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import ITreeFile from '../interfaces/ITreeFile';
+import ITreeFile from '../interfaces/TreeFile.inteface';
 import IModulePath from '../interfaces/IModulePath';
 import { NoPathExistError, NoFileExistError } from '../classes/Error';
 

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { createToken } from '../../../services/jwt.services';
+import { createToken } from '../../../services/jwt.service';
 import { verifyPassword } from '../../../services/crypto.services';
 import Account from '../../../services/Account.services';
 import { ResourceNotFoundError } from '../../../core/repository.core';
-import { AccountLog } from '../../../services/logger.services';
+import { AccountLog } from '../../../services/logger.service';
 import loginMiddleware from '../../../middlewares/login.middlewares';
 import { sendSuccess, sendError } from '../../../core/trafic.core';
 
@@ -25,7 +25,7 @@ async function postLogin(req: Request, res: Response) {
       return;
     }
 
-    const token = createToken(username);
+    const token = createToken(username, account.role);
 
     if (!token) {
       sendError(res, 'authentication creation error');

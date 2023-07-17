@@ -2,7 +2,7 @@ import path from 'path';
 import { Sequelize } from 'sequelize-typescript';
 import dotenv from 'dotenv';
 import { Dialect } from 'sequelize';
-import { ServerLog } from '../services/logger.services';
+import { ServerLog } from '../services/logger.service';
 
 const baseRoute = path.join(__dirname, '..');
 const baseRouteENV = path.join(__dirname, '..', '..');

@@ -1,5 +1,5 @@
 import { NoPathExistError, NoFileExistError } from '../classes/Error';
-import ITreeFile from '../interfaces/ITreeFile';
+import ITreeFile from '../interfaces/TreeFile.inteface';
 import { pathToTreeFile, getModuleByUrl } from './pathToTreeFile';
 
 // getModuleByUrl

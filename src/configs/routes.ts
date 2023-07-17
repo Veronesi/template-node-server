@@ -1,8 +1,8 @@
 const ROUTES = {
   PUBLIC_ROUTES: new Set([
-    'api/account/login.post',
-    'api/account/register.post',
-    'api/account/loginGoogle.post',
+    'api/auth/login.post',
+    'api/auth/register.post',
+    'api/auth/loginGoogle.post',
     'logger/[id].get',
     'api/mongodb/user/[id].get',
   ]),

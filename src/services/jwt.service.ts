@@ -1,14 +1,13 @@
 import jwt, { Secret } from 'jsonwebtoken';
-import { TokenDecoded } from '../interfaces/IJwt';
+import { TokenDecoded } from '../interfaces/Jwt.interface';
 
-export function createToken(account: string) {
+export function createToken(account: string, userType: string) {
   if (!process.env.SEED) {
     return false;
   }
   const secretKey: Secret = process.env.SEED;
   const { EXPIRATION_TOKEN: expiresIn } = process.env;
-
-  return jwt.sign({ account }, secretKey, { expiresIn });
+  return jwt.sign({ account, userType }, secretKey, { expiresIn });
 }
 
 export function verifyToken(token: string = ''): TokenDecoded {
@@ -30,6 +29,7 @@ export function verifyToken(token: string = ''): TokenDecoded {
   }
   try {
     const decoded = jwt.verify(token, secretKey);
+
     return {
       decoded,
       error: false,

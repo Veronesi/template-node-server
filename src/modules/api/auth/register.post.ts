@@ -3,8 +3,8 @@ import { UniqueConstraintError } from 'sequelize';
 import Account from '../../../services/Account.services';
 import { encryptPassword } from '../../../services/crypto.services';
 import registerMiddleware from '../../../middlewares/register.middlewares';
-import { createToken } from '../../../services/jwt.services';
-import { AccountLog } from '../../../services/logger.services';
+import { createToken } from '../../../services/jwt.service';
+import { AccountLog } from '../../../services/logger.service';
 import { sendError, sendSuccess } from '../../../core/trafic.core';
 
 async function postRegister(req: Request, res: Response) {
@@ -13,9 +13,9 @@ async function postRegister(req: Request, res: Response) {
   try {
     const { hash, salt } = await encryptPassword(password.toString());
 
-    await Account.create({ username, email, hash, salt, role: '', emailGoogle: '' });
+    const account = await Account.create({ username, email, hash, salt, role: '', emailGoogle: '' });
 
-    const token = createToken(username);
+    const token = createToken(username, account.role);
 
     if (!token) {
       sendError(res, 'authentication creation error');

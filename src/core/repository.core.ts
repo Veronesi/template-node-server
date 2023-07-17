@@ -2,7 +2,7 @@
 import { Model, ModelCtor } from 'sequelize-typescript';
 import { MakeNullishOptional } from 'sequelize/types/utils';
 import { Attributes, WhereOptions } from 'sequelize/types'; // BulkCreateOptions
-import IBaseRepository from '../interfaces/IBaseRepository';
+import BaseRepository from '../interfaces/BaseRepository';
 import { BaseError } from './baseError.core';
 
 export class ResourceNotFoundError extends BaseError {
@@ -11,17 +11,18 @@ export class ResourceNotFoundError extends BaseError {
   }
 }
 
-export default abstract class SequelizeBaseRepository<M extends Model> implements IBaseRepository {
+export default abstract class SequelizeBaseRepository<M extends Model> implements BaseRepository {
   public model!: ModelCtor<M>;
 
   constructor(model: ModelCtor<M>) {
     this.model = model;
   }
 
-  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[]): Promise<M[]> {
+  public async findAll(query?: WhereOptions<Attributes<M>>, attributes?: string[], include?: Array<string>): Promise<M[]> {
     const resource = await this.model.findAll({
       where: query,
       attributes,
+      include,
     });
     if (resource) {
       return resource;
@@ -30,9 +31,10 @@ export default abstract class SequelizeBaseRepository<M extends Model> implement
     return [];
   }
 
-  public async findById(id: number, attributes?: string[]): Promise<M | null> {
+  public async findById(id: number, attributes?: string[], include?: Array<string>): Promise<M | null> {
     const resource = await this.model.findByPk(id, {
       attributes,
+      include,
     });
 
     if (resource) {

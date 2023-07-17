@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --runInBand --forceExit",
+    "test-coverage": "jest --coverage --watchAll --runInBand --forceExit",
     "dev": "nodemon -e ts  --exec \"npm run start\"",
     "start": "tsc && node dist/index.js",
     "lint": "eslint src/**/*.ts --ext .ts",
@@ -27,6 +28,7 @@
     "@types/jest": "^28.1.6",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/morgan": "^1.9.3",
+    "@types/multer": "^1.4.7",
     "@types/request": "^2.48.8",
     "@types/sqlite3": "^3.1.8",
     "@types/supertest": "^2.0.12",
@@ -56,6 +58,7 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "mysql2": "^2.3.3",
     "redis": "^4.3.0",
     "sequelize": "^6.21.3",

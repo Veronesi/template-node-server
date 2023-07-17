@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import Account from '../services/Account.services';
 import ROUTES from '../configs/routes';
 import ROLS from '../configs/rols';
 import { getModuleByUrl } from '../libs/pathToTreeFile';
-import ITreeFile from '../interfaces/ITreeFile';
+import TreeFile from '../interfaces/TreeFile.inteface';
 import { sendError } from '../core/trafic.core';
 
 export default async function rolsMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -17,7 +16,7 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
     return;
   }
   try {
-    const { role = 'user', username = '' } = (await Account.findOne({ username: account }, ['role', 'username'])) ?? {};
+    const { userType: role, account: username } = res.locals;
     if (!username) {
       sendError(res, 'username not found', 401);
       return;
@@ -27,7 +26,7 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
     const roleSelect: string = Object.keys(ROLS).find((e) => e === roleUpperCase) ?? 'USER';
     const UrlList: string[] = ROLS[roleSelect];
 
-    const tree: ITreeFile = req.app.get('tree');
+    const tree: TreeFile = req.app.get('tree');
     const url = getModuleByUrl(`${req.params[0]}.${req.method.toLocaleLowerCase()}.js`, tree)
       .pathname.replace(/\.(\w+).(js|ts)$/, '')
       .replace(/\[/g, '\\[')
@@ -43,9 +42,9 @@ export default async function rolsMiddleware(req: Request, res: Response, next: 
       next();
       return;
     }
-    sendError(res, "Don't have permissions", 401);
+    sendError(res, `Don't have permissions`, 401);
     return;
-  } catch (err) {
-    sendError(res, 'error in the trycatch rols middleware');
+  } catch (err: any) {
+    sendError(res, err.message);
   }
 }

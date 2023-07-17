@@ -1,5 +1,5 @@
 import app from './app';
-import logger from './services/logger.services';
+import logger from './services/logger.service';
 
 app.listen(process.env.PORT, () => {
   // eslint-disable-next-line no-console

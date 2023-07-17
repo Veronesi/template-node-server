@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { getModuleByUrl } from '../libs/pathToTreeFile';
-import ITreeFile from '../interfaces/ITreeFile';
-import { ServerLog } from '../services/logger.services';
+import TreeFile from '../interfaces/TreeFile.inteface';
+import { ServerLog } from '../services/logger.service';
 import { NoPathExistError, NoFileExistError } from '../classes/Error';
 import { sendError } from '../core/trafic.core';
 
 export default async function parser(req: Request, res: Response, next: NextFunction) {
   const method = req.method.toLocaleLowerCase();
-  const tree: ITreeFile = req.app.get('tree');
+  const tree: TreeFile = req.app.get('tree');
 
   try {
     const { params, pathname } = getModuleByUrl(`${req.params[0]}.${method}.js`, tree);
