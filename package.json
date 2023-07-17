@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --runInBand --forceExit",
-    "test-coverage": "jest --coverage --watchAll --runInBand --forceExit",
+    "test": "jest .",
+    "test:ci": "jest --detectOpenHandles --forceExit",
+    "test-coverage": "jest --coverage .",
     "dev": "nodemon -e ts  --exec \"npm run start\"",
+    "dev:ts": "ts-node src/index.ts",
     "start": "tsc && node dist/index.js",
+    "prettier": "prettier --write './src/**/*.{ts,tsx}'",
     "lint": "eslint src/**/*.ts --ext .ts",
-    "build": "tsc"
+    "lint-fix": "eslint --fix './src/**/*.{ts,tsx}'",
+    "build": "tsc && cp -R ./src/assets ./dist/assets"
   },
   "repository": {
     "type": "git",
